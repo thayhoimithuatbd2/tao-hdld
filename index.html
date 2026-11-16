@@ -77,14 +77,14 @@ const SECTIONS=[
  {k:"dc_a",l:"Địa chỉ",v:"Thôn Dăm xã Vũ Xá, Huyện Lục Nam, Tỉnh Bắc Giang, Việt Nam",r:1,a:1,c:1},
  {k:"mst",l:"Mã số thuế",v:"2400811158",r:1,a:1},
  {k:"sdt_a",l:"Điện thoại",v:"0974496246",r:1,a:1},
- {k:"xung_a",l:"Người đại diện",t:"s",o:["ông","bà"],v:"ông",a:1},
+ {k:"xung_a",l:"Người đại diện",t:"s",o:["ÔNG","BÀ"],v:"ÔNG",a:1},
  {k:"ten_a",l:"Họ tên người đại diện",v:"Nguyễn Văn Đức",r:1,a:1},
  {k:"chucvu_a",l:"Chức vụ",v:"Giám Đốc",r:1,a:1},
- {k:"qt_a",l:"Quốc tịch",v:"Việt Nam",r:1,a:1}]],
+ {k:"qt_a",l:"Quốc tịch",t:"s",o:["Việt Nam","Khác (nhập thêm)"],v:"Việt Nam",r:1,a:1,other:1,oph:"Nhập quốc tịch khác, VD: Hàn Quốc"}]],
 ["Bên B – Người lao động",[
  {k:"XUNG_B",l:"Danh xưng",t:"s",o:["ÔNG","BÀ"],v:"ÔNG"},
  {k:"ten_b",l:"Họ và tên",r:1,ph:"VD: Trần Thế Thủy"},
- {k:"qt_b",l:"Quốc tịch",v:"Việt Nam",r:1},
+ {k:"qt_b",l:"Quốc tịch",t:"s",o:["Việt Nam","Khác (nhập thêm)"],v:"Việt Nam",r:1,other:1,oph:"Nhập quốc tịch khác, VD: Hàn Quốc"},
  {k:"ns_b",l:"Ngày sinh",t:"d",r:1},
  {k:"dt_b",l:"Điện thoại",ph:"Có thể để trống"},
  {k:"nghe_b",l:"Nghề nghiệp",v:"Lao động tự do",r:1},
@@ -94,7 +94,7 @@ const SECTIONS=[
  {k:"loai_giay",l:"Loại giấy tờ",t:"s",o:["Số CCCD","Số CMND","Số CMTND"],v:"Số CCCD"},
  {k:"cccd",l:"Số giấy tờ",r:1},
  {k:"cap_ngay",l:"Ngày cấp",t:"d",r:1},
- {k:"noi_cap",l:"Nơi cấp",v:"Cục Cảnh sát QLHC về TTXH",r:1}]],
+ {k:"noi_cap",l:"Nơi cấp",t:"s",o:["Cục Cảnh sát QLHC về TTXH","Khác (nhập thêm)"],v:"Cục Cảnh sát QLHC về TTXH",r:1,other:1,oph:"Nhập nơi cấp khác, VD: Công an tỉnh Bắc Ninh"}]],
 ["Điều 1 – Công việc, địa điểm, thời hạn",[
  {k:"loai_hd",l:"Loại hợp đồng",t:"s",o:["Không thời hạn","Xác định thời hạn"],v:"Không thời hạn"},
  {k:"tu_ngay",l:"Từ ngày",t:"d",r:1},
@@ -104,7 +104,7 @@ const SECTIONS=[
 ["Điều 2 – Lương, phụ cấp",[
  {k:"luong",l:"Lương cơ bản",r:1,ph:"VD: 10.500.000 đồng/tháng"},
  {k:"hotro",l:"Các hỗ trợ hàng tháng",v:"200.000 đồng/tháng",r:1,a:1},
- {k:"hinhthuc",l:"Hình thức trả lương",t:"s",o:["Tiền mặt","Chuyển khoản","Khác (nhập thêm)"],v:"Tiền mặt",r:1,a:1,other:1}]],
+ {k:"hinhthuc",l:"Hình thức trả lương",t:"s",o:["Tiền mặt","Chuyển khoản","Khác (nhập thêm)"],v:"Tiền mặt",r:1,a:1,other:1,oph:"Nhập hình thức khác, VD: Ví điện tử"}]],
 ["Điều 3 – Thời giờ làm việc",[
  {k:"sang",l:"Buổi sáng",v:"7h30 - 11h30",r:1,a:1},
  {k:"chieu",l:"Buổi chiều",v:"13h30p - 17h30p",r:1,a:1}]]
@@ -152,7 +152,7 @@ function build(sel){
    if(f.t==="s"){el=document.createElement("select");f.o.forEach(o=>{const op=document.createElement("option");op.textContent=o;el.appendChild(op)})}
    else{el=document.createElement("input");el.type=f.t==="d"?"date":"text";if(f.ph)el.placeholder=f.ph}
    el.id=id;let x=null;
-   if(f.other){x=document.createElement("input");x.type="text";x.id=id+"_o";x.placeholder="Nhập hình thức khác, VD: Ví điện tử";x.style.marginTop="8px";
+   if(f.other){x=document.createElement("input");x.type="text";x.id=id+"_o";x.placeholder=f.oph||"Nhập nội dung khác";x.style.marginTop="8px";
     el.value=f.v||"";
     const sync=()=>{x.style.display=el.value===OTHER?"":"none"};el.addEventListener("change",sync);sync()}
    else el.value=f.v||"";
@@ -177,7 +177,7 @@ function values(){
  o.ngay_ky=long(v.ngay_ky);o.ns_b=short(v.ns_b);o.cap_ngay=short(v.cap_ngay);o.tu_ngay=short(v.tu_ngay);
  o.den_ngay=v.loai_hd==="Xác định thời hạn"&&v.den_ngay?short(v.den_ngay):"........................................";
  o.dt_b=v.dt_b||"……………..";
- o.CTY=v.cty.toUpperCase();o.TEN_B_HOA=v.ten_b.toUpperCase();
+ o.CTY=v.cty.toUpperCase();o.TEN_A_HOA=v.ten_a.toUpperCase();o.TEN_B_HOA=v.ten_b.toUpperCase();
  return o;
 }
 function check(){
@@ -193,6 +193,7 @@ async function make(){
  try{
   const zip=await JSZip.loadAsync(TPL,{base64:true});
   let xml=await zip.file("word/document.xml").async("string");
+  xml=xml.replace("{{ten_a}}","{{TEN_A_HOA}}");
   const val=values();
   xml=xml.replace(/\{\{(\w+)\}\}/g,(m,k)=>k in val?esc(val[k]):m);
   zip.file("word/document.xml",xml);
