@@ -109,7 +109,7 @@ const SECTIONS=[
  {k:"sang",l:"Buổi sáng",v:"7h30 - 11h30",r:1,a:1},
  {k:"chieu",l:"Buổi chiều",v:"13h30p - 17h30p",r:1,a:1}]]
 ];
-SECTIONS.forEach(([,fs])=>fs.forEach(f=>{if(f.t!=="s"&&f.t!=="d"&&f.v){f.ph="VD: "+f.v;delete f.v}}));
+SECTIONS.forEach(([,fs])=>fs.forEach(f=>{if(f.t!=="s"&&f.t!=="d"&&f.v&&f.k!=="sang"&&f.k!=="chieu"){f.ph="VD: "+f.v;delete f.v}}));
 const OTHER="Khác (nhập thêm)";
 const val=({f,el,x})=>(f.other&&el.value===OTHER)?x.value.trim():el.value.trim();
 const $=s=>document.querySelector(s), F=[];
@@ -121,7 +121,7 @@ function persist(){try{localStorage.setItem("hdld_bena_list",JSON.stringify(stor
 function setVal(i,v){const {f,el,x}=i;
  if(f.other){x.value="";if(!v)el.value=f.v||"";else if(f.o.includes(v)&&v!==OTHER)el.value=v;else{el.value=OTHER;x.value=v}x.style.display=el.value===OTHER?"":"none"}
  else if(f.t==="s")el.value=(v&&f.o.includes(v))?v:(f.v||"");
- else el.value=v||""}
+ else el.value=(v!=null&&v!=="")?v:(f.v||"")}
 function applyProfile(name){const p=store.items[name]||{};F.forEach(i=>{if(i.f.a)setVal(i,p[i.f.k])});prog()}
 function refreshProf(sel){const el=$("#f_prof");if(!el)return;el.innerHTML="";
  const o0=document.createElement("option");o0.value="";o0.textContent=Object.keys(store.items).length?"— Nhập công ty mới —":"— Chưa có công ty nào được lưu —";el.appendChild(o0);
